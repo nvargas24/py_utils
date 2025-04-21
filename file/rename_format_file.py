@@ -15,7 +15,7 @@ import os
 import re
 
 # Ruta de la carpeta
-carpeta = r"T:\MaterialRodante\Laboratorio\Laboratorio de Electrónica\Reparaciones\Notas de Reparación"
+carpeta = None
 
 # Recorrer todos los archivos en la carpeta
 for archivo in os.listdir(carpeta): 

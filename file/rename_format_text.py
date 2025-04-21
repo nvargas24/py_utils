@@ -2,8 +2,7 @@ import re
 import os
 
 # Ruta de la carpeta
-carpeta = r"T:\MaterialRodante\Laboratorio\Laboratorio de Electrónica\Reparaciones\Notas de Reparación"
-
+carpeta = None
 ###text = r'(RE) (\d+)'
 ######text = r"\breparación\b"
 text = r"\bRE(\d+)\b"
