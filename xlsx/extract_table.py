@@ -2,8 +2,15 @@ from openpyxl import load_workbook
 from openpyxl.utils import coordinate_to_tuple
 
 import pandas as pd
+from dotenv import load_dotenv
+import os
 
-URL = 'E:\Documentos\Workspace\Data_libre\FALLAS VVVF MITSUBISHI 20240129_V1.0.xlsx'
+# Extraccion de URL del archivo xlsx desde un .env
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+dotenv_path = os.path.join(BASE_DIR, 'urls_sarmiento.env')
+load_dotenv(dotenv_path)
+url_file_mit = os.getenv("URL_MITSUBISHI")
+URL = os.path.join(url_file_mit, "FALLAS VVVF MITSUBISHI 20240129_V1.0.xlsx")
 
 # Carga de archivo xlsx
 wb = load_workbook(URL)
@@ -19,7 +26,6 @@ try:
     print(df_test.info())
 except Exception as e:
     print(f"Error al cargar el archivo: {e}")
-
 
 start_table = "A1"
 end_table = "X1"
