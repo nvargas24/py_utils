@@ -13,6 +13,14 @@ ws = wb.active
 for merge in ws.merged_cells.ranges:
     print(f"Celdas combinadas: {merge}")
 
+try:
+    df_test = pd.read_excel(URL, sheet_name=ws.title, header=None)
+    print(df_test)
+    print(df_test.info())
+except Exception as e:
+    print(f"Error al cargar el archivo: {e}")
+
+
 start_table = "A1"
 end_table = "X1"
 
