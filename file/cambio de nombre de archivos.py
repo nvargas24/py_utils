@@ -1,9 +1,21 @@
+"""
+rename__format_file.py
+-----------
+
+Descripción general:
+Este módulo se encarga de renombrar archivos .doc y .docx
+para ajustar al formato :  'LS-MR-CT-R-000 [nombre de archivo]'
+
+Autor: Ing. Vargas Nahuel
+Fecha: 2025-04-21
+Versión: 1.0.0
+Licencia: MIT (u otra)
+"""
 import os
 import re
 
 # Ruta de la carpeta
 carpeta = r"T:\MaterialRodante\Laboratorio\Laboratorio de Electrónica\Reparaciones\Notas de Reparación"
-
 
 # Recorrer todos los archivos en la carpeta
 for archivo in os.listdir(carpeta): 
