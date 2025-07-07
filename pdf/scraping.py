@@ -21,10 +21,15 @@ def extraer_tablas_pdf(ruta_pdf):
 
 def imprimir_tablas(datos):
     for tabla_info in datos:
-        print(f"Página: {tabla_info['pagina']} - Tabla: {tabla_info['tabla']}")
-        for fila in tabla_info["contenido"]:
-            print(fila)
-        print("-" * 40)
+        if tabla_info['tabla'] != 1 and \
+            tabla_info['tabla'] != 6 and \
+            tabla_info['tabla'] != 7 and \
+            tabla_info['tabla'] != 8 and \
+            tabla_info['tabla'] != 9: 
+                print(f"Página: {tabla_info['pagina']} - Tabla: {tabla_info['tabla']}")
+                for fila in tabla_info["contenido"]:
+                    print(fila)
+                print("-" * 40)
 
 if __name__ == "__main__":
     ruta_pdf = r"t:\MaterialRodante\Laboratorio\Laboratorio de Electrónica\Reparaciones\Notas de Reparación\LS-MR-CT-R-000 Nota de Reparación RE3007.pdf"  # Cambia por la ruta de tu PDF
