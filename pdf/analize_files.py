@@ -9,12 +9,12 @@ URL = r"T:\MaterialRodante\Laboratorio\Laboratorio de Electrónica"
 type_files = {
     'word': {
         'name_sheet': "Word",
-        'extension': ('.doc', 'docx')
+        'extension': ('.doc', '.docx')
     },
 
     'excel' : {
         'name_sheet': "Excel",
-        'extension': ('.xls', 'xlsx')
+        'extension': ('.xls', '.xlsx')
     },
 
     'pdf' : {
@@ -33,14 +33,21 @@ def update(df, extension):
     )
 
 def extract_author(ruta):
-    # Obtener descriptor de seguridad del archivo
-    sd = win32security.GetFileSecurity(ruta, win32security.OWNER_SECURITY_INFORMATION)
-    # Extraer el SID del owner
-    owner_sid = sd.GetSecurityDescriptorOwner()
-    # Obtener nombre legible del owner
-    nombre_usuario, dominio, _ = win32security.LookupAccountSid(None, owner_sid)
+    try:
+        # Obtener descriptor de seguridad del archivo
+        sd = win32security.GetFileSecurity(ruta, win32security.OWNER_SECURITY_INFORMATION)
+        # Extraer el SID del owner
+        owner_sid = sd.GetSecurityDescriptorOwner()
+        # Obtener nombre legible del owner
+        nombre_usuario, dominio, _ = win32security.LookupAccountSid(None, owner_sid)
+        return nombre_usuario
+    except win32security.error as e:
+        # Ignorar el error de SID huérfano y retornar un valor por defecto
+        return "Propietario no disponible"
 
-    return nombre_usuario
+
+
+
 
 def extract_data_file(root, name, extension):
     dict_data_file = {}
@@ -56,12 +63,13 @@ def extract_data_file(root, name, extension):
             dict_data_file['Fecha de creación'] = datetime.datetime.fromtimestamp(fecha_mod)
             dict_data_file['Fecha ultima actualizacion'] = datetime.datetime.fromtimestamp(fecha_create)
             dict_data_file['Autor'] = user_author
-            dict_data_file['Url'] = f'=HYPERLINK("{ruta}", "Abrir archivo")'
+            dict_data_file['Url archivo'] = f'=HYPERLINK("{ruta}", "Abrir archivo")'
+            dict_data_file['Url carpeta'] = f'=HYPERLINK("{root}", "Abrir carpeta")'
 
             return dict_data_file
         
         except Exception as e:
-            print(f"Error con el archivo: {ruta}")
+            print(f"Error con el archivo - {e} : {ruta}")
             return None
     return None
 
