@@ -3,36 +3,54 @@ import win32security
 
 import datetime
 import pandas as pd
+from openpyxl import load_workbook
 
 URL = r"T:\MaterialRodante\Laboratorio\Laboratorio de Electrónica"
 
 type_files = {
-    'word': {
-        'name_sheet': "Word",
-        'extension': ('.doc', '.docx')
-    },
-
-    'excel' : {
-        'name_sheet': "Excel",
-        'extension': ('.xls', '.xlsx')
-    },
-
-    'pdf' : {
-        'name_sheet': "Pdf",
-        'extension': '.pdf'
-    }    
+    'word': ('.doc', '.docx'),
+    'excel': ('.xls', '.xlsx', '.xlsm', '.xlsb'),
+    'pdf': ('.pdf',),
+    'powerpoint': ('.ppt', '.pptx', '.pps', '.ppsx'),
+    'text': ('.txt', '.csv', '.log', '.md'),
+    'images': ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.svg'),
+    'compressed': ('.zip', '.rar', '.7z', '.tar', '.gz'),
+    'code': ('.py', '.java', '.cpp', '.c', '.js', '.html', '.css', '.sh', '.bat'),
+    'database': ('.sql', '.db', '.sqlite', '.mdb', '.accdb'),
+    'cad': ('.dwg', '.dxf'),
+    'xml_json': ('.xml', '.json'),
+    'outlook': ('.msg', '.eml', '.pst', '.ost'),
+    'scripts': ('.ps1', '.vbs', '.reg'),
+    'executables': ('.exe', '.msi'),
+    'spreadsheet_other': ('.ods',),  # LibreOffice Calc
+    'document_other': ('.odt',),     # LibreOffice Writer
 }
+
 
 def update(df, extension):
     """
-    Actualiza excel con indice de todos los formatos disponibles
+    Actualiza archivo Excel 'indice de archivos.xlsx':
+    - Si existe la hoja, la reemplaza.
+    - Si no existe, la agrega.
+    - Mantiene las demás hojas.
     """
-    df.to_excel('indice de archivos.xlsx', 
-                index=False, 
-                sheet_name=type_files[extension]['name_sheet']
-    )
+    file_path = 'indice de archivos.xlsx'
+    sheet_name = extension
+
+    if os.path.exists(file_path):
+        # Cargar el libro existente
+        with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+            df.to_excel(writer, index=False, sheet_name=sheet_name)
+    else:
+        # Crear nuevo archivo
+        with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name=sheet_name)
+
 
 def extract_author(ruta):
+    """
+    Obteniene usuario que creo archivo
+    """
     try:
         # Obtener descriptor de seguridad del archivo
         sd = win32security.GetFileSecurity(ruta, win32security.OWNER_SECURITY_INFORMATION)
@@ -45,11 +63,10 @@ def extract_author(ruta):
         # Ignorar el error de SID huérfano y retornar un valor por defecto
         return "Propietario no disponible"
 
-
-
-
-
 def extract_data_file(root, name, extension):
+    """
+    Extrae todos los datos relevantes del archivo
+    """
     dict_data_file = {}
 
     if name.lower().endswith(extension):
@@ -73,23 +90,23 @@ def extract_data_file(root, name, extension):
             return None
     return None
 
+
 """
 OBS.:
 root: la ruta actual del directorio que se está recorriendo.
 dirs: una lista de los subdirectorios en ese directorio.
 files: una lista de los archivos en ese directorio.
 """
-registros = []
 
-for root, dirs, files in os.walk(URL):
-    for name in files: # obtiene nombre de archivos disponibles
-        data_file = extract_data_file(root, name, type_files['word']['extension'])
-        if data_file:
-            registros.append(data_file)
+for extension in type_files:
+    print(f"Extension : {extension}")
+    registros = []    
+    for root, dirs, files in os.walk(URL):
+        for name in files: # obtiene nombre de archivos disponibles
+            data_file = extract_data_file(root, name, type_files[extension])
+            if data_file:
+                registros.append(data_file)
 
-df = pd.DataFrame(registros)
-
-print(df)
-print(df.info())
-
-update(df, 'word')
+    df = pd.DataFrame(registros)
+    print(df.info())
+    update(df, extension)
