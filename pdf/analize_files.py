@@ -17,7 +17,7 @@ type_files = {
     'compressed': ('.zip', '.rar', '.7z', '.tar', '.gz'),
     'code': ('.py', '.java', '.cpp', '.c', '.js', '.html', '.css', '.sh', '.bat'),
     'database': ('.sql', '.db', '.sqlite', '.mdb', '.accdb'),
-    'cad': ('.dwg', '.dxf'),
+    'cad': ('.dwg', '.dxf', '.sch'),
     'xml_json': ('.xml', '.json'),
     'outlook': ('.msg', '.eml', '.pst', '.ost'),
     'scripts': ('.ps1', '.vbs', '.reg'),
@@ -71,32 +71,40 @@ def extract_data_file(root, name, extension):
 
     if name.lower().endswith(extension):
         ruta = os.path.join(root, name)
+        
+        dict_data_file['Nombre de archivo'] = name
+        dict_data_file['Url archivo'] = f'=HYPERLINK("{ruta}", "Abrir archivo")'
+        dict_data_file['Url carpeta'] = f'=HYPERLINK("{root}", "Abrir carpeta")'
+
+        try:
+            fecha_mod = os.path.getmtime(ruta)
+            dict_data_file['Fecha de creación'] = datetime.datetime.fromtimestamp(fecha_mod)
+        except Exception as e:
+            dict_data_file['Fecha de creación'] = 'No disponible'
+            print(f"[Warning] No se pudo obtener fecha de modificación: {name}")
+
+        try:
+            fecha_create = os.path.getctime(ruta)
+            dict_data_file['Fecha ultima actualizacion'] = datetime.datetime.fromtimestamp(fecha_create)
+        except Exception as e:
+            dict_data_file['Fecha ultima actualizacion'] = 'No disponible'
+            print(f"[Warning] No se pudo obtener fecha de creación: {name}")
+
         try:
             user_author = extract_author(ruta)
-            fecha_mod = os.path.getmtime(ruta)
-            fecha_create = os.path.getctime(ruta)
-
-            dict_data_file['Nombre de archivo'] = name
-            dict_data_file['Fecha de creación'] = datetime.datetime.fromtimestamp(fecha_mod)
-            dict_data_file['Fecha ultima actualizacion'] = datetime.datetime.fromtimestamp(fecha_create)
             dict_data_file['Autor'] = user_author
-            dict_data_file['Url archivo'] = f'=HYPERLINK("{ruta}", "Abrir archivo")'
-            dict_data_file['Url carpeta'] = f'=HYPERLINK("{root}", "Abrir carpeta")'
-
-            return dict_data_file
-        
         except Exception as e:
-            print(f"Error con el archivo - {e} : {ruta}")
-            return None
+            dict_data_file['Autor'] = 'No disponible'
+            print(f"[Warning] No se pudo obtener el autor: {name}")
+        
+        return dict_data_file
+        
     return None
 
 
-"""
-OBS.:
-root: la ruta actual del directorio que se está recorriendo.
-dirs: una lista de los subdirectorios en ese directorio.
-files: una lista de los archivos en ese directorio.
-"""
+#root: la ruta actual del directorio que se está recorriendo.
+#dirs: una lista de los subdirectorios en ese directorio.
+#files: una lista de los archivos en ese directorio.
 
 for extension in type_files:
     print(f"Extension : {extension}")
