@@ -1,7 +1,5 @@
 # py_utils
 Este repositorio contiene una colección de módulos Python independientes, diseñados para ser reutilizables en distintos proyectos. Cada archivo .py implementa funciones específicas para tareas comunes.
-<<<<<<< HEAD
-=======
 git push github nueva_rama:main
 
 ---
@@ -42,4 +40,3 @@ Provee funcionalidades para trabajar con archivos Excel:
 > 📌 Usá `xlsx_cleaner.py` para procesar grandes volúmenes de datos en Excel y eliminar filas vacías o corruptas.
 -->
 ---
->>>>>>> 358b271aaaf577eed8e1e799d2d80b679a37e32e
