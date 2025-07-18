@@ -1,2 +1,51 @@
-# Archivos de configuracion
+# VS Code
+.vscode/
+*.code-workspace
+
+# Archivos de entorno y configuración
 *.env
+*.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.log
+
+# Microsoft Office
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+
+# Imágenes
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.svg
+*.ico
+
+# PDF
+*.pdf
+
+# Archivos temporales y de sistema
+*.tmp
+*.bak
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Otros archivos generados
+*.out
+*.exe
+*.dll
+*.obj
+*.class
+
+# Carpetas de desarrollo
+node_modules/
+dist/
+build/
