@@ -28,12 +28,11 @@ def extraer_tablas_pdf(ruta_pdf):
 
     return datos
 
-def imprimir_tablas(datos):
+def struct_tablas(datos):
     tablas = {}
 
     for tabla_info in datos:
-        for fila in tabla_info["contenido"]:
-            tablas[f"Pag{tabla_info['pagina']}_Table{tabla_info['tabla']}"] = fila
+        tablas[f"Pag{tabla_info['pagina']}_Table{tabla_info['tabla']}"] = tabla_info['contenido']
 
     return tablas
 
@@ -45,4 +44,6 @@ if __name__ == "__main__":
     ruta_pdf = os.path.join(url_folder_rep,
                             r"LS-MR-CT-R-000 Nota de Reparación RE3007.pdf")
     datos = extraer_tablas_pdf(ruta_pdf)
-    imprimir_tablas(datos)
+    data_table = struct_tablas(datos)
+
+    pprint.pprint(data_table)
