@@ -41,21 +41,27 @@ def struct_tablas(datos):
 def search_data(data):
     dict_data = {}
     patron = r'MODULO\s+(\w+).*?SISTEMA\s+(\w+).*?N° SERIE\s*(\w+)?\s*PRIMER'
-    text_re = re.search(patron, data)
+    text = re.search(patron, data)
 
-    dict_data['modulo'] = text_re.group(1)
-    dict_data['sistema'] = text_re.group(2)
-    dict_data['n_serie'] = text_re.group(3)
+    dict_data['modulo'] = text.group(1)
+    dict_data['sistema'] = text.group(2)
+    dict_data['n_serie'] = text.group(3)
 
     patron2 = r'PRIMER\s+INGRESO.*?SI.*?(X)?\W+NO.*?(X)?\W+NÚMERO\s+DE\s+SERVICIO\s+ANTERIOR.*?(\d{3,5})'
-    text2 = re.search(patron2, data, flags=re.IGNORECASE)
+    text = re.search(patron2, data, flags=re.IGNORECASE)
 
-    if text2.group(1):
+    if text.group(1):
         dict_data['primer_ingreso'] = "SI"
-    elif text2.group(2):
+        dict_data['re_anterior'] = None
+    elif text.group(2):
         dict_data['primer_ingreso'] = "NO"
+        dict_data['re_anterior'] = text.group(3)
 
-    dict_data['re_anterior'] = text2.group(3)
+    patron3 = r'OBSERVACIONES:\s*(.*?)\s*RECIBIDO POR:\s*(.+?)\s+(\d{2}/\d{2}/\d{4})'
+    text = re.search(patron3, data)
+    dict_data['observaciones'] = text.group(1)
+    dict_data['recibio'] = text.group(2)
+    dict_data['fecha_recibido'] = text.group(3)
 
     return dict_data
 
@@ -65,7 +71,7 @@ if __name__ == "__main__":
                         )
     
     ruta_pdf = os.path.join(url_folder_rep,
-                            r"LS-MR-CT-R-000 Nota de Reparación RE3007.pdf")
+                            r"LS-MR-CT-R-000 Nota de Reparacion RE3167.pdf")
     datos = extraer_tablas_pdf(ruta_pdf)
     data_table = struct_tablas(datos)
 
