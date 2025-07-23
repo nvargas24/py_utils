@@ -38,6 +38,17 @@ def struct_tablas(datos):
 
     return tablas
 
+def search_data(data):
+    dict_data = {}
+    patron = r'MODULO\s+(\w+).*?SISTEMA\s+(\w+).*?N° SERIE\s*(\w+)?\s*PRIMER'
+    text_re = re.search(patron, data)
+
+    dict_data['modulo'] = text_re.group(1)
+    dict_data['sistema'] = text_re.group(2)
+    dict_data['n_serie'] = text_re.group(3)
+
+    return dict_data
+
 if __name__ == "__main__":
     url_folder_rep = os.path.join(cfg.read_config(r"pdf\url_file.cfg", "Reparaciones", "url_folder"), 
                         cfg.read_config(r"pdf\url_file.cfg", "Reparaciones", "url_notas_rep")
@@ -49,3 +60,6 @@ if __name__ == "__main__":
     data_table = struct_tablas(datos)
 
     pprint.pprint(data_table)
+    datos_solicitante = search_data(data_table['Pag1_Table3'])
+    
+    pprint.pprint(datos_solicitante)  # Esto imprimirá "LCU"
