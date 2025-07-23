@@ -22,21 +22,21 @@ def read_config(key, value):
     
     return value
 
-def update_cfg_url(extension_file, url):
+def update_param(url_cfg, key, param, new_value):
     """
-    Actualizo en archivo .cfg url
+    Actualizo parametro en archivo cfg
     """
     obj_parse = configparser.ConfigParser()
-    obj_parse[f"{extension_file}"]['url'] = url
+    obj_parse[f"{key}"][f"{param}"] = new_value
     
-    with open(URL_CONFIG, 'w', encoding='utf-8') as configfile:
+    with open(url_cfg, 'w', encoding='utf-8') as configfile:
         obj_parse.write(configfile)
 
-def update_cfg_url2(url_folder, name_file):
+def update_cfg_url(url_cfg, url_folder, name_file):
     """
     Actualizo url de archivos solo con ubicacion de carpeta
     """
     url_xlsx = os.join(url_folder, name_file)
     _, extension = os.path.splitext(name_file)
     extension = extension[1:]  # Eliminar el punto inicial
-    update_cfg_url(extension, url_xlsx)
+    update_cfg_url(url_cfg, extension, 'url', url_xlsx)
