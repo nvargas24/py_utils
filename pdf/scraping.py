@@ -3,6 +3,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from file import read_cfg as cfg
+import pprint
 
 def extraer_tablas_pdf(ruta_pdf):
     datos = []
@@ -15,25 +16,26 @@ def extraer_tablas_pdf(ruta_pdf):
                     [celda for celda in fila if celda is not None]
                     for fila in tabla if fila is not None
                 ]
+                
+                # combina listas y sublistas en un str
+                str_table = ' '.join(' '.join(map(str, fila)) for fila in tabla_limpia)
+                
                 datos.append({
                     "pagina": pagina_num + 1,
                     "tabla": tabla_num + 1,
-                    "contenido": tabla_limpia
+                    "contenido": str_table
                 })
 
     return datos
 
 def imprimir_tablas(datos):
+    tablas = {}
+
     for tabla_info in datos:
-        if tabla_info['tabla'] != 1 and \
-            tabla_info['tabla'] != 6 and \
-            tabla_info['tabla'] != 7 and \
-            tabla_info['tabla'] != 8 and \
-            tabla_info['tabla'] != 9: 
-                print(f"Página: {tabla_info['pagina']} - Tabla: {tabla_info['tabla']}")
-                for fila in tabla_info["contenido"]:
-                    print(fila)
-                print("-" * 40)
+        for fila in tabla_info["contenido"]:
+            tablas[f"Pag{tabla_info['pagina']}_Table{tabla_info['tabla']}"] = fila
+
+    return tablas
 
 if __name__ == "__main__":
     url_folder_rep = os.path.join(cfg.read_config(r"pdf\url_file.cfg", "Reparaciones", "url_folder"), 
