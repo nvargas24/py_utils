@@ -4,6 +4,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from file import read_cfg as cfg
 import pprint
+import re
 
 def extraer_tablas_pdf(ruta_pdf):
     datos = []
@@ -18,12 +19,13 @@ def extraer_tablas_pdf(ruta_pdf):
                 ]
                 
                 # combina listas y sublistas en un str
-                str_table = ' '.join(' '.join(map(str, fila)) for fila in tabla_limpia)
-                
+                str_table = '\n'.join(' '.join(map(str, fila)) for fila in tabla_limpia)
+                str_limpio = re.sub(r'\s+', ' ', str_table)
+
                 datos.append({
                     "pagina": pagina_num + 1,
                     "tabla": tabla_num + 1,
-                    "contenido": str_table
+                    "contenido": str_limpio
                 })
 
     return datos
