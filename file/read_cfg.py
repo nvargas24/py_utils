@@ -4,28 +4,29 @@ import os
 URL_CONFIG = "config.cfg"
 obj_parse = configparser.ConfigParser()
     
-def read_config():
+def read_config(key, value):
     """
     Lectura de archivo .cfg
+    :param key: clave de config. en []
+    :param value: tipo de config. 
+    :return rta: extraccion
     """
+    
+    obj_parse = configparser.ConfigParser()
     try:
         with open(URL_CONFIG, 'r', encoding='utf-8') as configfile:
             obj_parse.read_file(configfile)
+            rta = obj_parse[f"{key}"][f"{value}"]
     except Exception as e:
         raise RuntimeError(f"Error al leer el archivo de configuración: {e}")
-
-def extract_config(file, value):
-    """
-    Obtiene valor de config
-    """
-    value = obj_parse[f"{file}"][f"{value}"]
-
+    
     return value
 
 def update_cfg_url(extension_file, url):
     """
     Actualizo en archivo .cfg url
     """
+    obj_parse = configparser.ConfigParser()
     obj_parse[f"{extension_file}"]['url'] = url
     
     with open(URL_CONFIG, 'w', encoding='utf-8') as configfile:
