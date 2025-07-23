@@ -1,22 +1,21 @@
 import configparser
 import os
 
-URL_CONFIG = "config.cfg"
 obj_parse = configparser.ConfigParser()
     
-def read_config(key, value):
+def read_config(url_cfg, key, param):
     """
     Lectura de archivo .cfg
     :param key: clave de config. en []
-    :param value: tipo de config. 
-    :return rta: extraccion
+    :param param: tipo de config. 
+    :return value: extraccion
     """
     
     obj_parse = configparser.ConfigParser()
     try:
-        with open(URL_CONFIG, 'r', encoding='utf-8') as configfile:
+        with open(url_cfg, 'r', encoding='utf-8') as configfile:
             obj_parse.read_file(configfile)
-            rta = obj_parse[f"{key}"][f"{value}"]
+            value = obj_parse[f"{key}"][f"{param}"].strip('"')
     except Exception as e:
         raise RuntimeError(f"Error al leer el archivo de configuración: {e}")
     
