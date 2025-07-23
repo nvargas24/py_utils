@@ -1,4 +1,8 @@
 import pdfplumber
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from file import read_cfg as cfg
 
 def extraer_tablas_pdf(ruta_pdf):
     datos = []
@@ -32,6 +36,11 @@ def imprimir_tablas(datos):
                 print("-" * 40)
 
 if __name__ == "__main__":
-    ruta_pdf = r"t:\MaterialRodante\Laboratorio\Laboratorio de Electrónica\Reparaciones\Notas de Reparación\LS-MR-CT-R-000 Nota de Reparación RE3007.pdf"  # Cambia por la ruta de tu PDF
+    url_folder_rep = os.path.join(cfg.read_config(r"pdf\url_file.cfg", "Reparaciones", "url_folder"), 
+                        cfg.read_config(r"pdf\url_file.cfg", "Reparaciones", "url_notas_rep")
+                        )
+    
+    ruta_pdf = os.path.join(url_folder_rep,
+                            r"LS-MR-CT-R-000 Nota de Reparación RE3007.pdf")
     datos = extraer_tablas_pdf(ruta_pdf)
     imprimir_tablas(datos)
