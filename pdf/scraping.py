@@ -47,6 +47,16 @@ def search_data(data):
     dict_data['sistema'] = text_re.group(2)
     dict_data['n_serie'] = text_re.group(3)
 
+    patron2 = r'PRIMER\s+INGRESO.*?SI.*?(X)?\W+NO.*?(X)?\W+NÚMERO\s+DE\s+SERVICIO\s+ANTERIOR.*?(\d{3,5})'
+    text2 = re.search(patron2, data, flags=re.IGNORECASE)
+
+    if text2.group(1):
+        dict_data['primer_ingreso'] = "SI"
+    elif text2.group(2):
+        dict_data['primer_ingreso'] = "NO"
+
+    dict_data['re_anterior'] = text2.group(3)
+
     return dict_data
 
 if __name__ == "__main__":
