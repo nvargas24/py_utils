@@ -41,7 +41,7 @@ def struct_tablas(datos):
 def search_data(data, flag):
     dict_data = {}
     # Descripcion del componente o sistema a reparar, revisar o ensayar
-    if flag == "solicitante":
+    if flag == "descripcion":
         patron = r'MODULO\s+(\w+).*?SISTEMA\s+(\w+).*?N° SERIE\s*(\w+)?\s*PRIMER'
         text = re.search(patron, data)
 
@@ -76,11 +76,11 @@ def search_data(data, flag):
                   )
 
         text = re.search(patron, data)
-        print(text)
+
         dict_data['operario_taller'] = text.group(1) if text.group(1) else None
         dict_data['detalle_trabajos'] = text.group(2)
         dict_data['materiales'] = text.group(3)
-        dict_data['realizo'] = text.group(4)
+        dict_data['realializo'] = text.group(4)
         dict_data['fecha_reparacion'] = text.group(5)
 
     return dict_data
@@ -91,14 +91,14 @@ if __name__ == "__main__":
                         )
     
     ruta_pdf = os.path.join(url_folder_rep,
-                            r"LS-MR-CT-R-000 Nota de Reparacion RE3166.pdf")
+                            r"LS-MR-CT-R-000 Nota de Reparacion RE3175.pdf")
     datos = extraer_tablas_pdf(ruta_pdf)
     
     data_table = struct_tablas(datos)
     pprint.pprint(data_table)
 
-    datos_solicitante = search_data(data_table['Pag1_Table3'], "solicitante")
-    pprint.pprint(datos_solicitante)
+    descripcion = search_data(data_table['Pag1_Table3'], "descripcion")
+    pprint.pprint(descripcion)
 
     trabajos_realizados = search_data(data_table['Pag1_Table4'], "detalle")
     pprint.pprint(trabajos_realizados)
