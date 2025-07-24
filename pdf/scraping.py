@@ -38,30 +38,50 @@ def struct_tablas(datos):
 
     return tablas
 
-def search_data(data):
+def search_data(data, flag):
     dict_data = {}
-    patron = r'MODULO\s+(\w+).*?SISTEMA\s+(\w+).*?N° SERIE\s*(\w+)?\s*PRIMER'
-    text = re.search(patron, data)
+    # Descripcion del componente o sistema a reparar, revisar o ensayar
+    if flag == "solicitante":
+        patron = r'MODULO\s+(\w+).*?SISTEMA\s+(\w+).*?N° SERIE\s*(\w+)?\s*PRIMER'
+        text = re.search(patron, data)
 
-    dict_data['modulo'] = text.group(1)
-    dict_data['sistema'] = text.group(2)
-    dict_data['n_serie'] = text.group(3)
+        dict_data['modulo'] = text.group(1)
+        dict_data['sistema'] = text.group(2)
+        dict_data['n_serie'] = text.group(3)
 
-    patron2 = r'PRIMER\s+INGRESO.*?SI.*?(X)?\W+NO.*?(X)?\W+NÚMERO\s+DE\s+SERVICIO\s+ANTERIOR.*?(\d{3,5})'
-    text = re.search(patron2, data, flags=re.IGNORECASE)
+        patron = r'PRIMER\s+INGRESO.*?SI.*?(X)?\W+NO.*?(X)?\W+NÚMERO\s+DE\s+SERVICIO\s+ANTERIOR.*?(\d{3,5})'
+        text = re.search(patron, data, flags=re.IGNORECASE)
 
-    if text.group(1):
-        dict_data['primer_ingreso'] = "SI"
-        dict_data['re_anterior'] = None
-    elif text.group(2):
-        dict_data['primer_ingreso'] = "NO"
-        dict_data['re_anterior'] = text.group(3)
+        if text.group(1):
+            dict_data['primer_ingreso'] = "SI"
+            dict_data['re_anterior'] = None
+        elif text.group(2):
+            dict_data['primer_ingreso'] = "NO"
+            dict_data['re_anterior'] = text.group(3)
 
-    patron3 = r'OBSERVACIONES:\s*(.*?)\s*RECIBIDO POR:\s*(.+?)\s+(\d{2}/\d{2}/\d{4})'
-    text = re.search(patron3, data)
-    dict_data['observaciones'] = text.group(1)
-    dict_data['recibio'] = text.group(2)
-    dict_data['fecha_recibido'] = text.group(3)
+        patron = r'OBSERVACIONES:\s*(.*?)\s*RECIBIDO POR:\s*(.+?)\s+(\d{2}/\d{2}/\d{4})'
+        text = re.search(patron, data)
+        dict_data['observaciones'] = text.group(1)
+        dict_data['recibio'] = text.group(2)
+        dict_data['fecha_recibido'] = text.group(3)
+    
+    elif flag == "detalle":
+        # Descripcion de los trabajos realizados
+        patron = (
+                r'NOMBRE OPERARIO DE TALLER \(Solo Intervenciones o ensayos\)\s*'
+                r'(.*?)\s*'
+                r'DETALLE DE LOS TRABAJOS REALIZADOS:\s*(.*?)\s*'
+                r'MATERIALES UTILIZADOS:\s*(.*?)\s*'
+                r'REALIZADO POR:\s*(.*?)\s*(\d{2}/\d{2}/\d{4})'
+                  )
+
+        text = re.search(patron, data)
+        print(text)
+        dict_data['operario_taller'] = text.group(1) if text.group(1) else None
+        dict_data['detalle_trabajos'] = text.group(2)
+        dict_data['materiales'] = text.group(3)
+        dict_data['realizo'] = text.group(4)
+        dict_data['fecha_reparacion'] = text.group(5)
 
     return dict_data
 
@@ -71,11 +91,14 @@ if __name__ == "__main__":
                         )
     
     ruta_pdf = os.path.join(url_folder_rep,
-                            r"LS-MR-CT-R-000 Nota de Reparacion RE3167.pdf")
+                            r"LS-MR-CT-R-000 Nota de Reparacion RE3166.pdf")
     datos = extraer_tablas_pdf(ruta_pdf)
-    data_table = struct_tablas(datos)
-
-    pprint.pprint(data_table)
-    datos_solicitante = search_data(data_table['Pag1_Table3'])
     
-    pprint.pprint(datos_solicitante)  # Esto imprimirá "LCU"
+    data_table = struct_tablas(datos)
+    pprint.pprint(data_table)
+
+    datos_solicitante = search_data(data_table['Pag1_Table3'], "solicitante")
+    pprint.pprint(datos_solicitante)
+
+    trabajos_realizados = search_data(data_table['Pag1_Table4'], "detalle")
+    pprint.pprint(trabajos_realizados)
