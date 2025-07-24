@@ -40,8 +40,23 @@ def struct_tablas(datos):
 
 def search_data(data, flag):
     dict_data = {}
-    # Descripcion del componente o sistema a reparar, revisar o ensayar
-    if flag == "descripcion":
+
+    if flag == "nota":
+        patron = r'NOTA\s+DE\s+SERVICIO\s+N°:\s+([A-Z])\s+([A-Z])\s+(\d{3,})'
+        text = re.search(patron, data)
+
+        print(text)
+        dict_data["tipo_servicio"] = text.group(1)
+        dict_data["recibe_loc"] = text.group(2)
+        dict_data["num_serv"] = text.group(3)
+
+    elif flag == "solicitante":
+        pass
+    elif flag == "tipo":
+        pass
+    elif flag == "formacion":
+        pass
+    elif flag == "descripcion":
         patron = r'MODULO\s+(\w+).*?SISTEMA\s+(\w+).*?N° SERIE\s*(\w+)?\s*PRIMER'
         text = re.search(patron, data)
 
@@ -57,7 +72,7 @@ def search_data(data, flag):
             dict_data['re_anterior'] = None
         elif text.group(2):
             dict_data['primer_ingreso'] = "NO"
-            dict_data['re_anterior'] = text.group(3)
+            dict_data['serv_anterior'] = text.group(3)
 
         patron = r'OBSERVACIONES:\s*(.*?)\s*RECIBIDO POR:\s*(.+?)\s+(\d{2}/\d{2}/\d{4})'
         text = re.search(patron, data)
@@ -83,6 +98,9 @@ def search_data(data, flag):
         dict_data['realializo'] = text.group(4)
         dict_data['fecha_reparacion'] = text.group(5)
 
+    elif flag == "verificacion":
+        pass
+
     return dict_data
 
 if __name__ == "__main__":
@@ -96,6 +114,9 @@ if __name__ == "__main__":
     
     data_table = struct_tablas(datos)
     pprint.pprint(data_table)
+
+    nota = search_data(data_table['Pag1_Table2'], "nota")
+    pprint.pprint(nota)
 
     descripcion = search_data(data_table['Pag1_Table3'], "descripcion")
     pprint.pprint(descripcion)
