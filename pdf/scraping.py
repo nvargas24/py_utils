@@ -45,7 +45,6 @@ def search_data(data, flag):
         patron = r'NOTA\s+DE\s+SERVICIO\s+N°:\s+([A-Z])\s+([A-Z])\s+(\d{3,})'
         text = re.search(patron, data)
 
-        print(text)
         dict_data["tipo_servicio"] = text.group(1)
         dict_data["recibe_loc"] = text.group(2)
         dict_data["num_serv"] = text.group(3)
@@ -75,7 +74,14 @@ def search_data(data, flag):
             dict_data['tipo_servicio'] = "Ensayo"
 
     elif flag == "formacion":
-        pass
+        patron = (r'INTERVENIDA FORMACIÓN\s(.*?)'
+                  r'COCHE(.*?)DESCRIPCIÓN'
+                  )
+        text = re.search(patron, data)
+
+        dict_data['formacion'] = text.group(1)
+        dict_data['coche'] = text.group(2)
+        
     elif flag == "descripcion":
         patron = r'MODULO\s+(\w+).*?SISTEMA\s+(\w+).*?N° SERIE\s*(\w+)?\s*PRIMER'
         text = re.search(patron, data)
@@ -143,6 +149,9 @@ if __name__ == "__main__":
 
     tipo = search_data(data_table['Pag1_Table3'], "tipo")
     pprint.pprint(tipo)
+
+    formacion = search_data(data_table['Pag1_Table3'], "formacion")
+    pprint.pprint(formacion)
 
     descripcion = search_data(data_table['Pag1_Table3'], "descripcion")
     pprint.pprint(descripcion)
