@@ -51,9 +51,29 @@ def search_data(data, flag):
         dict_data["num_serv"] = text.group(3)
 
     elif flag == "solicitante":
-        pass
+        patron = (r'NOMBRE\s+Y\s+APELLIDO:\s*(.*?)\s+SECTOR:\s*(.*?)\s+'    
+                 r'Referencia\sIngreso\s-\sO.T.\sN°\s*(.*?)\s+'
+                 r'TIPO')
+
+        text = re.search(patron, data)
+        dict_data['solicitante'] = text.group(1) if text.group(1) else None
+        dict_data['sector_solicitante'] = text.group(2) if text.group(2) else None
+        dict_data['ot_num'] = text.group(3) if text.group(3) else None
+
     elif flag == "tipo":
-        pass
+        patron = (r'DE FORMACIÓN:\s*([xX])?\s+'
+                  r'REPARACIÓN DE MÓDULO:\s*([xX])?\s+'
+                  r'ENSAYO:\s*([xX])?\sORIGEN'
+                  )
+        text = re.search(patron, data)
+
+        if text.group(1):
+            dict_data['tipo_servicio'] = "Intervención"
+        elif text.group(2):
+            dict_data['tipo_servicio'] = "Reparación"
+        elif text.group(2):
+            dict_data['tipo_servicio'] = "Ensayo"
+
     elif flag == "formacion":
         pass
     elif flag == "descripcion":
@@ -117,6 +137,12 @@ if __name__ == "__main__":
 
     nota = search_data(data_table['Pag1_Table2'], "nota")
     pprint.pprint(nota)
+
+    solicitante = search_data(data_table['Pag1_Table3'], "solicitante")
+    pprint.pprint(solicitante)
+
+    tipo = search_data(data_table['Pag1_Table3'], "tipo")
+    pprint.pprint(tipo)
 
     descripcion = search_data(data_table['Pag1_Table3'], "descripcion")
     pprint.pprint(descripcion)
