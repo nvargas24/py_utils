@@ -29,17 +29,22 @@ if __name__ == "__main__":
     
     list_pdfs = pdfs_enable(url_folder_rep)
     pprint.pprint(list_pdfs)
+    df_aux = []
 
-    try:
-        ruta_pdf = os.path.join(url_folder_rep, list_pdfs[1])
-        datos = extraer_tablas_pdf(ruta_pdf)
-        data_table = struct_tablas(datos)
-        dict_full_pdf = create_dict_data(data_table)
-        df_pdf = pd.DataFrame([dict_full_pdf])
+    for file_pdf in list_pdfs:
+        try:
+            ruta_pdf = os.path.join(url_folder_rep, file_pdf)
+            datos = extraer_tablas_pdf(ruta_pdf)
+            data_table = struct_tablas(datos)
+            dict_full_pdf = create_dict_data(data_table)
+            df_pdf = pd.DataFrame([dict_full_pdf])
+            df_aux.append(df_pdf)
+        except Exception as e:
+            print(f"Ocurrió un error: {file_pdf} - {e}")
 
-        print(df_pdf)
-        print(df_pdf.info())
-    except Exception as e:
-        print(f"Ocurrió un error: {e}")
+    df = pd.concat(df_aux, ignore_index=True)
+
+    print(df)
+    print(df.info())
 
     
