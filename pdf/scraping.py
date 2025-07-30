@@ -145,16 +145,10 @@ def search_data(data, flag):
 
     return dict_data
 
-if __name__ == "__main__":
-    url_folder_rep = os.path.join(cfg.read_config(r"pdf\url_file.cfg", "Reparaciones", "url_folder"), 
-                        cfg.read_config(r"pdf\url_file.cfg", "Reparaciones", "url_notas_rep")
-                        )
-    
-    ruta_pdf = os.path.join(url_folder_rep,
-                            r"LS-MR-CT-R-000 Nota de Reparacion RE3199.pdf")
-    datos = extraer_tablas_pdf(ruta_pdf)
-    
-    data_table = struct_tablas(datos)
+def create_dict_data(data_table):
+    """
+    Extrae datos de pdf y los almacena en un unico diccionario
+    """
 
     nota = search_data(data_table['Pag1_Table2'], "nota")
     solicitante = search_data(data_table['Pag1_Table3'], "solicitante")
@@ -167,7 +161,21 @@ if __name__ == "__main__":
     data_full_pdf = {**nota, **solicitante, **tipo, **formacion,  
                  **descripcion, **trabajos_realizados, **verificacion}
     
-    df_pdf = pd.DataFrame([data_full_pdf])
+    return data_full_pdf
+
+if __name__ == "__main__":
+    url_folder_rep = os.path.join(cfg.read_config(r"pdf\url_file.cfg", "Reparaciones", "url_folder"), 
+                        cfg.read_config(r"pdf\url_file.cfg", "Reparaciones", "url_notas_rep")
+                        )
+    
+    ruta_pdf = os.path.join(url_folder_rep,
+                            r"LS-MR-CT-R-000 Nota de Reparacion RE3199.pdf")
+    datos = extraer_tablas_pdf(ruta_pdf)
+    
+    data_table = struct_tablas(datos)
+
+    dict_full_pdf = create_dict_data(data_table)
+    df_pdf = pd.DataFrame([dict_full_pdf])
 
     print(df_pdf)
     print(df_pdf.info())
