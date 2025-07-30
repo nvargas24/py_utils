@@ -170,10 +170,8 @@ if __name__ == "__main__":
     
     ruta_pdf = os.path.join(url_folder_rep,
                             r"LS-MR-CT-R-000 Nota de Reparacion RE3199.pdf")
-    datos = extraer_tablas_pdf(ruta_pdf)
-    
+    datos = extraer_tablas_pdf(ruta_pdf) 
     data_table = struct_tablas(datos)
-
     dict_full_pdf = create_dict_data(data_table)
     df_pdf = pd.DataFrame([dict_full_pdf])
 
