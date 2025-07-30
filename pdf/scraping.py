@@ -90,7 +90,7 @@ def search_data(data, flag):
         dict_data['sistema'] = text.group(2)
         dict_data['n_serie'] = text.group(3)
 
-        patron = r'PRIMER\s+INGRESO.*?SI.*?(X)?\W+NO.*?(X)?\W+NÚMERO\s+DE\s+SERVICIO\s+ANTERIOR.*?(\d{3,5})'
+        patron = r'PRIMER\s+INGRESO.*?SI.*?([xX])?\W+NO.*?([xX])?\W+NÚMERO\s+DE\s+SERVICIO\s+ANTERIOR.*?(\d{3,5})'
         text = re.search(patron, data, flags=re.IGNORECASE)
 
         if text.group(1):
@@ -121,11 +121,31 @@ def search_data(data, flag):
         dict_data['operario_taller'] = text.group(1) if text.group(1) else None
         dict_data['detalle_trabajos'] = text.group(2)
         dict_data['materiales'] = text.group(3)
-        dict_data['realializo'] = text.group(4)
+        dict_data['realizado'] = text.group(4)
         dict_data['fecha_reparacion'] = text.group(5)
 
     elif flag == "verificacion":
-        pass
+        patron = (r'revisión?.*?SI.*?([xX])?\W+NO.*?([xX])?\W+NO.*?'
+                  r'PRUEBAS REALIZADAS:\s*-?\s*(.*?)\s*SI.*?'
+                  r'UTILIZADOS:\s*-?\s*(.*?)\s*VERIFICADO POR:\s*(.*?)\s*(\d{2}/\d{2}/\d{4})'
+                  )
+
+        text = re.search(patron, data)
+        print(text.group(1))
+        print(text.group(2))
+        print(text.group(3))
+        print(text.group(5))
+        print(text.group(6))
+
+    if text.group(1):
+        dict_data['especificacion_p'] = 'SI'
+        dict_data['prueba_realizada'] = text.group(4)
+    elif text.group(2):
+        dict_data['especificacion_p'] = 'NO'
+        dict_data['prueba_realizada'] = text.group(3)
+
+    dict_data['verifico'] = text.group(5)
+    dict_data['fecha_verificacion'] = text.group(6)
 
     return dict_data
 
@@ -158,3 +178,6 @@ if __name__ == "__main__":
 
     trabajos_realizados = search_data(data_table['Pag1_Table4'], "detalle")
     pprint.pprint(trabajos_realizados)
+
+    verificacion = search_data(data_table['Pag1_Table5'], "verificacion")
+    pprint.pprint(verificacion)
