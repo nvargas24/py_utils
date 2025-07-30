@@ -131,21 +131,16 @@ def search_data(data, flag):
                   )
 
         text = re.search(patron, data)
-        print(text.group(1))
-        print(text.group(2))
-        print(text.group(3))
-        print(text.group(5))
-        print(text.group(6))
 
-    if text.group(1):
-        dict_data['especificacion_p'] = 'SI'
-        dict_data['prueba_realizada'] = text.group(4)
-    elif text.group(2):
-        dict_data['especificacion_p'] = 'NO'
-        dict_data['prueba_realizada'] = text.group(3)
+        if text.group(1):
+            dict_data['especificacion_p'] = 'SI'
+            dict_data['prueba_realizada'] = text.group(4)
+        elif text.group(2):
+            dict_data['especificacion_p'] = 'NO'
+            dict_data['prueba_realizada'] = text.group(3)
 
-    dict_data['verifico'] = text.group(5)
-    dict_data['fecha_verificacion'] = text.group(6)
+        dict_data['verifico'] = text.group(5)
+        dict_data['fecha_verificacion'] = text.group(6)
 
     return dict_data
 
@@ -155,7 +150,7 @@ if __name__ == "__main__":
                         )
     
     ruta_pdf = os.path.join(url_folder_rep,
-                            r"LS-MR-CT-R-000 Nota de Reparacion RE3175.pdf")
+                            r"LS-MR-CT-R-000 Nota de Reparacion RE3199.pdf")
     datos = extraer_tablas_pdf(ruta_pdf)
     
     data_table = struct_tablas(datos)
