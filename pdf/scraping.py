@@ -5,6 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from file import read_cfg as cfg
 import pprint
 import re
+import pandas as pd
 
 def extraer_tablas_pdf(ruta_pdf):
     datos = []
@@ -154,25 +155,19 @@ if __name__ == "__main__":
     datos = extraer_tablas_pdf(ruta_pdf)
     
     data_table = struct_tablas(datos)
-    pprint.pprint(data_table)
 
     nota = search_data(data_table['Pag1_Table2'], "nota")
-    pprint.pprint(nota)
-
     solicitante = search_data(data_table['Pag1_Table3'], "solicitante")
-    pprint.pprint(solicitante)
-
     tipo = search_data(data_table['Pag1_Table3'], "tipo")
-    pprint.pprint(tipo)
-
     formacion = search_data(data_table['Pag1_Table3'], "formacion")
-    pprint.pprint(formacion)
-
     descripcion = search_data(data_table['Pag1_Table3'], "descripcion")
-    pprint.pprint(descripcion)
-
     trabajos_realizados = search_data(data_table['Pag1_Table4'], "detalle")
-    pprint.pprint(trabajos_realizados)
-
     verificacion = search_data(data_table['Pag1_Table5'], "verificacion")
-    pprint.pprint(verificacion)
+
+    data_full_pdf = {**nota, **solicitante, **tipo, **formacion,  
+                 **descripcion, **trabajos_realizados, **verificacion}
+    
+    df_pdf = pd.DataFrame([data_full_pdf])
+
+    print(df_pdf)
+    print(df_pdf.info())
