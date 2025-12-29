@@ -1,6 +1,9 @@
 import win32com.client
 
 def list_usb_device_info():
+    """
+    Genera log dispositivos USB conectados
+    """
     wmi = win32com.client.GetObject("winmgmts:")
     usb_devices = wmi.ExecQuery("SELECT * FROM Win32_USBHub")
 
@@ -21,6 +24,9 @@ def list_usb_device_info():
     return device_info
 
 def get_drive_letters(device_id):
+    """
+    Accede a informacion de particion por ID
+    """
     wmi = win32com.client.GetObject("winmgmts:")
     partitions = wmi.ExecQuery(f"ASSOCIATORS OF {{Win32_PnPEntity.DeviceID='{device_id}'}} WHERE AssocClass=Win32_DiskDriveToDiskPartition")
     
@@ -35,6 +41,7 @@ def get_drive_letters(device_id):
 if __name__ == "__main__":
     usb_device_info = list_usb_device_info()
 
+    ### Test dispositivos conectados
     if usb_device_info:
         for idx, device in enumerate(usb_device_info, start=1):
             print(f"Dispositivo {idx}:")
