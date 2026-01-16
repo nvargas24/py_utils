@@ -1,0 +1,11 @@
+# Dependencias necesarias para xlsx/extract_table.py
+# openpyxl: leer/escribir archivos xlsx
+# pandas: manipulación de dataframes y read_excel
+# python-dotenv: cargar variables desde .env
+pandas>=1.5.3
+openpyxl>=3.0.10
+python-dotenv>=1.0.0
+
+# Notas:
+# - pip instalará las dependencias transitivas (numpy, etc.).
+# - Ajusta versiones si tu entorno requiere compatibilidad distinta.
