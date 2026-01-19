@@ -32,8 +32,8 @@ import os
 
 # Archivos y carpetas
 FILE_ENV = 'urls_sarmiento.env'
-KEY = "URL_MITSUBISHI"
-VALUE = "FALLAS VVVF MITSUBISHI 20240129_V1.0.xlsx"
+KEY = "URL_PIDS"
+VALUE = "Control Reparaciones 2026.xlsx"
 
 # Limites de tabla
 START_TABLE = "A1"
@@ -47,6 +47,7 @@ url_file_mit = os.getenv(KEY)
 URL = os.path.join(url_file_mit, VALUE)
 
 # Carga de archivo xlsx
+print(URL)
 wb = load_workbook(URL)
 ws = wb.active
 
@@ -84,11 +85,12 @@ rows_data = data[1:]
 
 # Creo dataframe
 df = pd.DataFrame(rows_data, columns=headers)    
+print(df)
 
 # Identifico y filtro solo filas validas - en base a num de registro
-df["Num"] = pd.to_numeric(df["N"], errors="coerce")
-df_clean = df.dropna(subset=["Num"])
-df_clean = df_clean.drop("Num", axis=1)
+#df["Num"] = pd.to_numeric(df["N"], errors="coerce")
+#df_clean = df.dropna(subset=["Num"])
+#df_clean = df_clean.drop("Num", axis=1)
 
-print(df_clean)
-print(df_clean.info())
+#print(df_clean)
+#print(df_clean.info())
